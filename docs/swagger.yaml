@@ -1,0 +1,37 @@
+openapi: 3.0.0
+info:
+    title: EasyTicket API
+    version: 1.0.0
+    description: API documentation for the EasyTicket backend
+servers:
+    - url: http://localhost:5000/api/v1
+paths:
+    /users/register:
+        post:
+            summary: Register a new user
+            tags:
+                - User
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                name:
+                                    type: string
+                                email:
+                                    type: string
+                                password:
+                                    type: string
+                                role:
+                                    type: string
+                            required:
+                                - name
+                                - email
+                                - password
+            responses:
+                "201":
+                    description: User registered successfully
+                "400":
+                    description: Bad request

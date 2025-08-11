@@ -1,13 +1,13 @@
+
+
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
 // import cookieParser from "cookie-parser";
 import router from "./app/routes";
 import globalErrorHandler from "./app/middleWares/globalErrorHandler";
 import notFound from "./app/middleWares/notFound";
-
 import { createServer } from "http";
-// import { Server } from "socket.io";
-// import { configureSocket } from "./sockets/socket";
+import { setupSwagger } from "./app/services/swagger.service";
 
 const app: Application = express();
 
@@ -31,18 +31,18 @@ export const httpServer = createServer(app);
 // app.use(cookieParser());
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded used in sslCommerz
+// Setup Swagger for API documentation
+setupSwagger(app);
 
 app.use("/api/v1", router);
-
-
-
-app.use(globalErrorHandler);
 
 app.get("/", (req: Request, res: Response) => {
     res.send("server is running");
 });
-app.use(notFound);
 
+app.use(notFound);
+app.use(globalErrorHandler);
+    
 export default app;
