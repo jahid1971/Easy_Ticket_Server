@@ -39,7 +39,7 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     ...(errorResponse.errorDetails.issues.length && {
       errorDetails: errorResponse.errorDetails,
     }),
-    stack: config.NODE_ENV === "development" ? err.stack : undefined,
+    stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
   });
 
   return;

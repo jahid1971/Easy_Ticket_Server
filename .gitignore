@@ -32,3 +32,6 @@ coverage/
 # Ignore local uploads or temp files
 uploads/
 tmp/
+
+# Ignore external embedded repositories
+external/
