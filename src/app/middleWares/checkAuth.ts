@@ -1,13 +1,14 @@
 import AppError from "../errors/AppError";
 
-import catchAsync from "../utls/catchAsync";
-import { jwtToken } from "../utls/jwtToken";
+import catchAsync from "../utils/catchAsync";
+import { jwtToken } from "../utils/jwtToken";
 import config from "../config";
 import { User, UserRole } from "@prisma/client";
 import { prisma } from "../services/prisma.service";
 
 const checkAuth = (...requiredRoles: Array<UserRole>) => {
     return catchAsync(async (req, res, next) => {
+        console.log(req.cookies," cookies in checkAuth middleware -----------------");
         const token = req.cookies.accessToken || req.headers.authorization;
 
         if (!token) {
@@ -29,10 +30,10 @@ const checkAuth = (...requiredRoles: Array<UserRole>) => {
 
         if (!user) throw new AppError(404, "User is not found !");
 
-        if (user.status === "BLOCKED")
+    if ((user as any).status === "BLOCKED")
             throw new AppError(403, "This user is blocked !");
 
-        if (user.status === "DELETED")
+    if ((user as any).status === "DELETED")
             throw new AppError(403, "User is deleted !");
 
         if (

@@ -9,7 +9,7 @@ const getAllItems = async <T>(
         andConditions?: Record<string, unknown>[];
         isDeletedCondition?: boolean;
         select?: Partial<Record<keyof T, unknown>>;
-        include?: Partial<Record<keyof T, unknown>>;
+        include?: Record<string, unknown>;
         extraSearchConditions?: Record<string, unknown>[];
         // orderBy?: Partial<Record<keyof T, string>>;
         orderBy?: Record<string, unknown>;
@@ -87,7 +87,7 @@ const getAllItems = async <T>(
     const whereConditions =
         andConditions.length > 0 ? { AND: andConditions } : undefined;
 
-        console.log(sortBy, sortOrder, "sort .............query");
+    console.log(sortBy, sortOrder, "sort .............query");
 
     const result = await Model.findMany({
         where: whereConditions,

@@ -1,6 +1,6 @@
 datasource db {
-    provider  = "postgresql"
-    url       = env("DATABASE_URL_STRING")
+    provider = "postgresql"
+    url      = env("DATABASE_URL_STRING")
 }
 
 generator client {
@@ -8,63 +8,69 @@ generator client {
 }
 
 model User {
-    id        String   @id @default(uuid())
+    id        String     @id @default(uuid())
     name      String
-    email     String   @unique
-    phone     String?  @unique
+    email     String     @unique
+    phone     String?    @unique
     password  String
-    role      String   // user, admin, operator
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    role      UserRole
+    status    UserStatus @default(ACTIVE)
+    createdAt DateTime   @default(now())
+    updatedAt DateTime   @updatedAt
     bookings  Booking[]
     payments  Payment[]
 }
 
 model Bus {
-    id                 String   @id @default(uuid())
+    id                 String     @id @default(uuid())
     name               String
     operator           String
-    seatMap            Json     // stores seat layout template
+    seatMap            Json // stores seat layout template
     registrationNumber String
-    createdAt          DateTime @default(now())
-    updatedAt          DateTime @updatedAt
+    coverImageUrl      String? // Optional URL for the bus photo
+    createdAt          DateTime   @default(now())
+    updatedAt          DateTime   @updatedAt
     schedules          Schedule[]
+    routeId            String?
+    route              Route?     @relation(fields: [routeId], references: [id])
 }
 
 model Route {
-    id        String   @id @default(uuid())
-    source    String
+    id          String     @id @default(uuid())
+    routeName   String?
+    description String?
+    source      String
     destination String
-    distance  Float
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    schedules Schedule[]
+    distance    Float
+    createdAt   DateTime   @default(now())
+    updatedAt   DateTime   @updatedAt
+    schedules   Schedule[]
+    buses       Bus[] // buses assigned to this route
 }
 
 model Schedule {
-    id         String   @id @default(uuid())
-    busId      String
-    routeId    String
+    id            String    @id @default(uuid())
+    busId         String
+    routeId       String
     departureTime DateTime
     arrivalTime   DateTime
-    price      Float
-    date       DateTime
-    createdAt  DateTime @default(now())
-    updatedAt  DateTime @updatedAt
-    bus        Bus      @relation(fields: [busId], references: [id])
-    route      Route    @relation(fields: [routeId], references: [id])
-    seats      Seat[]
-    bookings   Booking[]
+    price         Float
+    date          DateTime
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+    bus           Bus       @relation(fields: [busId], references: [id])
+    route         Route     @relation(fields: [routeId], references: [id])
+    seats         Seat[]
+    bookings      Booking[]
 }
 
 model Seat {
-    id         String   @id @default(uuid())
+    id         String @id @default(uuid())
     scheduleId String
-    row        String   // e.g., "A"
-    column     Int      // e.g., 1
-    seatNumber String   // e.g., "A1" (optional, can be generated from row+column)
-    isBooked   Boolean  @default(false)
-    schedule   Schedule @relation(fields: [scheduleId], references: [id])
+
+    seatNumber String
+    isBooked   Boolean   @default(false)
+    schedule   Schedule  @relation(fields: [scheduleId], references: [id])
     bookings   Booking[]
 }
 
@@ -73,7 +79,7 @@ model Booking {
     userId     String
     scheduleId String
     seatId     String
-    status     String   // booked, cancelled, pending
+    status     String // booked, cancelled, pending
     paymentId  String?
     createdAt  DateTime @default(now())
     updatedAt  DateTime @updatedAt
@@ -84,14 +90,27 @@ model Booking {
 }
 
 model Payment {
-    id         String   @id @default(uuid())
-    userId     String
-    amount     Float
-    status     String   // pending, completed, failed
-    method     String   // card, mobile banking, etc.
+    id            String    @id @default(uuid())
+    userId        String
+    amount        Float
+    status        String // pending, completed, failed
+    method        String // card, mobile banking, etc.
     transactionId String
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
-    user        User     @relation(fields: [userId], references: [id])
-    bookings    Booking[]
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+    user          User      @relation(fields: [userId], references: [id])
+    bookings      Booking[]
+}
+
+enum UserRole {
+    USER
+    ADMIN
+    OPERATOR
+    SUPER_ADMIN
+}
+
+enum UserStatus {
+    ACTIVE
+    BLOCKED
+    DELETED
 }

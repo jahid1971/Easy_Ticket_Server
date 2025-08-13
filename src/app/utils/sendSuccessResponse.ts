@@ -7,19 +7,22 @@ export type TMetaData = {
     totalPages: number;
 };
 
-const sendSuccessResponse = (
+const sendSuccessResponse = <T>(
     res: Response,
-    data: any,
+    data: T | { data: T; meta?: TMetaData },
     message: string,
     statusCode: number = 200,
     meta?: TMetaData
 ) => {
+    const isWrapped = (d: unknown): d is { data: unknown; meta?: TMetaData } =>
+        typeof d === "object" && d !== null && "data" in (d as any);
+
     const responseData = {
         success: true,
         statusCode: statusCode,
         message: message,
-        data: data?.data || data,
-        meta: data?.meta || meta || undefined,
+        data: isWrapped(data) ? data.data : data,
+        meta: isWrapped(data) ? data.meta || meta : meta || undefined,
     };
     console.log(message);
     return res.status(statusCode).json(responseData);

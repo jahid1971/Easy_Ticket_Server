@@ -1,4 +1,4 @@
-import jwt, { Secret } from "jsonwebtoken";
+import * as jwt from "jsonwebtoken";
 import AppError from "../errors/AppError";
 import { UserRole } from "@prisma/client";
 
@@ -12,13 +12,15 @@ export type TJwtPayload = {
 
 const createToken = (
     jwtPayload: TJwtPayload,
-    secret: Secret,
+    secret: string,
     expireTime: string
 ) => {
-    return jwt.sign(jwtPayload, secret, {
+    const options: jwt.SignOptions = {
         algorithm: "HS256",
-        expiresIn: expireTime,
-    });
+        expiresIn: expireTime as jwt.SignOptions["expiresIn"],
+    };
+
+    return jwt.sign(jwtPayload, secret as jwt.Secret, options);
 };
 
 const verifyToken = (

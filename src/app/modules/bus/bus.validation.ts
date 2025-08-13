@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { prisma } from '../../services/prisma.service';
 
 // Seat id like A1, B12
 const seatId = z.string().regex(/^[A-Z]\d+$/i, "Invalid seat id");
@@ -72,10 +73,38 @@ const createBusSchema = z
         }
     });
 
+// Schema for updating any bus fields
+const updateBusSchema = z
+    .object({
+        name: z.string().min(1).optional(),
+        operator: z.string().min(1).optional(),
+        registrationNumber: z.string().min(1).optional(),
+        seatMap: seatMapSchema.optional(),
+        routeId: z.string().uuid().optional(),
+    })
+    .refine((data) => Object.keys(data).length > 0, {
+        message: "At least one field must be provided",
+    })
+    .superRefine(async (data, ctx) => {
+        // route existence check
+        if (data.routeId) {
+            const route = await prisma.route.findUnique({
+                where: { id: data.routeId },
+            });
+            if (!route)
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: "Route not found",
+                });
+        }
+    });
+
 export const busValidationSchema = {
     seatMapSchema,
     columnPositionSchema,
     createBusSchema,
+    updateRouteSchema: z.object({ routeId: z.string().uuid() }),
+    updateBusSchema,
 };
 
 export type SeatMap = z.infer<typeof seatMapSchema>;

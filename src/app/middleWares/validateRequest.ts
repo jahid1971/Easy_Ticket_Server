@@ -6,8 +6,8 @@ const validateRequest = (schema: ZodObject<ZodRawShape>) => {
     return catchAsync(
         async (req: Request, res: Response, next: NextFunction) => {
             console.log(
-                req.body,
-                "request body in validateRequest middleware------------------------"
+                "request body in validateRequest middleware------------------------",
+                req.body
             );
             if (req.body.data) {
                 await schema.parseAsync(req.body.data);

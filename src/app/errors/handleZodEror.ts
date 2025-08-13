@@ -3,17 +3,18 @@ import { ZodError } from "zod";
 import { IErrorIssue, IGenericErrorResponse } from "../types/common";
 
 const handlerZodError = (err: ZodError): IGenericErrorResponse => {
-    console.log(err , 'err in zod error handle ---------------');
+    console.log(err, "err in zod error handle ---------------");
     const errorIssues: IErrorIssue[] = err.issues.map((issue) => {
-        if (issue?.message === "Required")
-            issue.message = `${issue?.path[0]} is required`;
+       
+        const pathSegment = issue?.path?.[0] ? String(issue.path[0]) : "";
+        const message = issue?.message === "Required" ? `${pathSegment} is required` : issue?.message;
 
         return {
             path: issue.path[issue.path.length - 1]?.toString() || "",
-            message: issue.message,
+            message,
             code: issue.code,
-            expected: "expected" in issue ? issue.expected : undefined,
-            received: "received" in issue ? issue.received : undefined,
+            expected: "expected" in issue ? (issue as any).expected : undefined,
+            received: "received" in issue ? (issue as any).received : undefined,
         };
     });
 

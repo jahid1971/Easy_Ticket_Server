@@ -2,7 +2,7 @@
 
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
-// import cookieParser from "cookie-parser";
+import cookieParser from "cookie-parser";
 import router from "./app/routes";
 import globalErrorHandler from "./app/middleWares/globalErrorHandler";
 import notFound from "./app/middleWares/notFound";
@@ -28,7 +28,7 @@ export const httpServer = createServer(app);
 // });
 // configureSocket();
 
-// app.use(cookieParser());
+app.use(cookieParser());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

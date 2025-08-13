@@ -6,7 +6,7 @@ info:
 servers:
     - url: http://localhost:5000/api/v1
 paths:
-    /users/register:
+    /register:
         post:
             summary: Register a new user
             tags:
@@ -24,8 +24,6 @@ paths:
                                     type: string
                                 password:
                                     type: string
-                                role:
-                                    type: string
                             required:
                                 - name
                                 - email
@@ -35,3 +33,116 @@ paths:
                     description: User registered successfully
                 "400":
                     description: Bad request
+    /buses:
+        get:
+            summary: Get list of buses with optional route info
+            tags:
+                - Bus
+            parameters:
+                - in: query
+                    name: page
+                    schema:
+                        type: integer
+                - in: query
+                    name: limit
+                    schema:
+                        type: integer
+                - in: query
+                    name: sortBy
+                    schema:
+                        type: string
+                - in: query
+                    name: sortOrder
+                    schema:
+                        type: string
+components:
+    schemas:
+        CreateBus:
+            type: object
+            properties:
+                name:
+                    type: string
+                operator:
+                    type: string
+                registrationNumber:
+                    type: string
+                seatMap:
+                    type: object
+                    description: Seat map layout
+                routeId:
+                    type: string
+                    format: uuid
+            required:
+                - name
+                - operator
+                - registrationNumber
+                - seatMap
+        RouteAssignment:
+            type: object
+            properties:
+                routeId:
+                    type: string
+                    format: uuid
+            required:
+                - routeId
+        Bus:
+            type: object
+            properties:
+                id:
+                    type: string
+                    format: uuid
+                name:
+                    type: string
+                operator:
+                    type: string
+                registrationNumber:
+                    type: string
+                seatMap:
+                    type: object
+                routeId:
+                    type: string
+                    nullable: true
+                route:
+                    $ref: '#/components/schemas/Route'
+                createdAt:
+                    type: string
+                    format: date-time
+                updatedAt:
+                    type: string
+                    format: date-time
+        Route:
+            type: object
+            properties:
+                id:
+                    type: string
+                    format: uuid
+                source:
+                    type: string
+                destination:
+                    type: string
+                distance:
+                    type: number
+                createdAt:
+                    type: string
+                    format: date-time
+                updatedAt:
+                    type: string
+                    format: date-time
+        BusListResponse:
+            type: object
+            properties:
+                data:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Bus'
+                meta:
+                    type: object
+                    properties:
+                        page:
+                            type: integer
+                        limit:
+                            type: integer
+                        total:
+                            type: integer
+                        totalPages:
+                            type: integer

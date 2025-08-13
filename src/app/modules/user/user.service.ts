@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import AppError from "../../errors/AppError";
 import { prisma } from "../../services/prisma.service";
+import { UserRole } from "@prisma/client";
 
 const registerUser = async (data: {
     name: string;
@@ -43,7 +44,7 @@ const registerUser = async (data: {
             email: email || "",
             phone: phone || "",
             password: hashedPassword,
-            role,
+            role: (role?.toUpperCase() as unknown as UserRole) || UserRole.USER,
         },
     });
 

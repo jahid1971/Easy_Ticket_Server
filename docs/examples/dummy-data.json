@@ -1,0 +1,149 @@
+{
+    "User": [
+        {
+            "id": "user-1",
+            "name": "John Doe",
+            "email": "john.doe@example.com",
+            "phone": "1234567890",
+            "role": "USER",
+            "status": "ACTIVE",
+            "password": "password123"
+        },
+        {
+            "id": "user-2",
+            "name": "Jane Smith",
+            "email": "jane.smith@example.com",
+            "phone": "0987654321",
+            "role": "ADMIN",
+            "status": "ACTIVE",
+            "password": "admin456"
+        }
+    ],
+    "Bus": [
+        {
+            "id": "bus-1",
+            "name": "City Express",
+            "operator": "City Transport",
+            "seatMap": {
+                "layout": [
+                    ["A1", "A2", "A3", "A4"],
+                    ["B1", "B2", "B3", "B4"],
+                    ["C1", "C2", "C3", "C4"],
+                    ["D1", "D2", "D3", "D4"],
+                    ["E1", "E2", "E3", "E4"],
+                    ["F1", "F2", "F3", "F4"],
+                    ["G1", "G2", "G3", "G4"],
+                    ["H1", "H2", "H3", "H4"],
+                    ["I1", "I2", "I3", "I4"],
+                    ["J1", "J2", "J3", "J4"]
+                ]
+            },
+            "columnPosition": {
+                "leftSide": [1, 2],
+                "rightSide": [3, 4]
+            },
+            "registrationNumber": "CT-1234"
+        },
+        {
+            "id": "bus-2",
+            "name": "Luxury Coach",
+            "operator": "Luxury Travels",
+            "seatMap": {
+                "layout": [
+                    ["A1", "A2", "A3"],
+                    ["B1", "B2", "B3"],
+                    ["C1", "C2", "C3"],
+                    ["D1", "D2", "D3"],
+                    ["E1", "E2", "E3"],
+                    ["F1", "F2", "F3"],
+                    ["G1", "G2", "G3"],
+                    ["H1", "H2", "H3"],
+                    ["I1", "I2", "I3"],
+                    ["J1", "J2", "J3"]
+                ]
+            },
+            "columnPosition": {
+                "leftSide": [1],
+                "rightSide": [2, 3]
+            },
+            "registrationNumber": "LX-5678"
+        }
+    ],
+    "Route": [
+        {
+            "id": "route-1",
+            "source": "City A",
+            "destination": "City B",
+            "distance": 150.5
+        },
+        {
+            "id": "route-2",
+            "source": "City B",
+            "destination": "City C",
+            "distance": 220.0
+        }
+    ],
+    "Schedule": [
+        {
+            "id": "schedule-1",
+            "busId": "bus-1",
+            "routeId": "route-1",
+            "departureTime": "2025-08-22T08:00:00Z",
+            "arrivalTime": "2025-08-22T12:00:00Z",
+            "price": 20.5
+        },
+        {
+            "id": "schedule-2",
+            "busId": "bus-2",
+            "routeId": "route-2",
+            "departureTime": "2025-08-22T09:00:00Z",
+            "arrivalTime": "2025-08-22T14:00:00Z",
+            "price": 30.0
+        }
+    ],
+    "Seat": [
+        {
+            "id": "seat-1",
+            "scheduleId": "schedule-1",
+            "seatNumber": "A1",
+            "isBooked": false
+        },
+        {
+            "id": "seat-2",
+            "scheduleId": "schedule-1",
+            "seatNumber": "A2",
+            "isBooked": true
+        },
+        {
+            "id": "seat-3",
+            "scheduleId": "schedule-2",
+            "seatNumber": "B1",
+            "isBooked": false
+        },
+        {
+            "id": "seat-4",
+            "scheduleId": "schedule-2",
+            "seatNumber": "B2",
+            "isBooked": false
+        }
+    ],
+    "Booking": [
+        {
+            "id": "booking-1",
+            "userId": "user-1",
+            "scheduleId": "schedule-1",
+            "seatId": "seat-2",
+            "status": "booked"
+        }
+    ],
+    "Payment": [
+        {
+            "id": "payment-1",
+            "userId": "user-1",
+            "amount": 20.5,
+            "status": "completed",
+            "method": "card",
+            "transactionId": "txn-12345"
+        }
+    ]
+}

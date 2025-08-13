@@ -1,5 +1,5 @@
 import AppError from "../errors/AppError";
-import { User } from "@prisma/client";
+import { User, UserStatus } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
 
 export const prisma = new PrismaClient({
@@ -22,15 +22,27 @@ export const prisma = new PrismaClient({
 // export const prisma = prismaClient;
 
 export const findUserByEmail = async (email: string): Promise<User | null> => {
-    return await prisma.user.findUnique({
-        where: { email, status:  { not: "DELETED" } },
+    const user = await prisma.user.findFirst({ where: { email, status: { not: UserStatus.DELETED } } });
+    return user;
+};
+
+export const findUserByIdentifier = async (identifier: string): Promise<User | null> => {
+    // identifier can be email or phone
+    const user = await prisma.user.findFirst({
+        where: {
+            OR: [
+                { email: identifier },
+                { phone: identifier }
+            ],
+            status: { not: UserStatus.DELETED }
+        }
     });
+
+    return user;
 };
 
 export const findUserById = async (id: string): Promise<User | null> => {
-    const user = await prisma.user.findUnique({
-        where: { id, status: { not: "DELETED" } },
-    });
+    const user = await prisma.user.findFirst({ where: { id, status: { not: UserStatus.DELETED } } });
 
     if (!user) throw new AppError(404, "User not found");
 
@@ -87,7 +99,7 @@ export const softDeleteUserById = async (
 
         await prismaClient.user.update({
             where: { [referenceField]: softDeletedRecord[referenceField] },
-            data: { status: UserStatus.DELETED },
+            data: { status: "DELETED" },
         });
 
         return softDeletedRecord;
